@@ -1,0 +1,57 @@
+app:
+  id: ${rootArtifactId}
+apollo:
+  bootstrap:
+    enabled: true
+    namespaces: application
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: ${rootArtifactId}
+
+server:
+  port: 8080
+
+endpoints:
+  web:
+    exposure:
+      include: prometheus
+      exclude: "*"
+  enabled: false
+  prometheus:
+    sensitive: false
+    enabled: true
+
+management:
+  metrics:
+    tags:
+      application: ${rootArtifactId}
+
+eureka:
+  user-name: xxx
+  pass-word: xxx
+  instance:
+      prefer-ip-address: true
+      instance-id: ${spring.cloud.client.ipAddress}:${server.port}
+      status-page-url-path: swagger-ui.html
+
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: com.${groupId}.entity
+
+---
+spring:
+  profiles: dev
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${eureka.user-name}:${eureka.pass-word}@eureka.xxx.com:8080/eureka/
+---
+spring:
+  profiles: test
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${eureka.user-name}:${eureka.pass-word}@eureka.xxx.com:8080/eureka/
